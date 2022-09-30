@@ -13,9 +13,6 @@ echo "$user_2factor"
 # Authentication
 user_pass=$(mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -sN -e "SELECT user_pass FROM user WHERE user_id = '$username' AND user_enable=1 AND (TO_DAYS(now()) >= TO_DAYS(user_start_date) OR user_start_date IS NULL) AND (TO_DAYS(now()) <= TO_DAYS(user_end_date) OR user_end_date IS NULL)")
 
-
-
-
 # Check the user
 if [ "$user_pass" == '' ]; then
   echo "$username: bad account."
@@ -35,8 +32,6 @@ else
   # no need to do 2 step authentication - use only passwod
   result=$(php -r "if(password_verify('$password', '$user_pass') == true) { echo 'ok'; } else { echo 'ko'; }")
 fi
-
-
 
 if [ "$result" == "ok" ]; then
   echo "$username: authentication ok."

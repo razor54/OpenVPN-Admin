@@ -1,11 +1,13 @@
-CREATE TABLE IF NOT EXISTS `application` ( `id` INT(11) AUTO_INCREMENT, `sql_schema` INT(11) NOT NULL, PRIMARY KEY (id) );
-
+CREATE TABLE IF NOT EXISTS `application` (
+  `id` INT(11) AUTO_INCREMENT,
+  `sql_schema` INT(11) NOT NULL,
+  PRIMARY KEY (id)
+);
 CREATE TABLE IF NOT EXISTS `admin` (
   `admin_id` varchar(255) NOT NULL,
   `admin_pass` varchar(255) NOT NULL,
   PRIMARY KEY (`admin_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
+) ENGINE = MyISAM DEFAULT CHARSET = utf8;
 CREATE TABLE IF NOT EXISTS `log` (
   `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
@@ -19,8 +21,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `log_send` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`log_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
+) ENGINE = MyISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `user` (
   `user_id` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `user_pass` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -30,9 +31,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   `user_enable` tinyint(1) NOT NULL DEFAULT '1',
   `user_2factor` tinyint(1) NOT NULL DEFAULT '1',
   `user_2factor_scode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-   `user_2factor_paired` tinyint(1) NOT NULL DEFAULT '0',
+  `user_2factor_paired` tinyint(1) NOT NULL DEFAULT '0',
   `user_start_date` date NOT NULL,
   `user_end_date` date NOT NULL,
   PRIMARY KEY (`user_id`),
   KEY `user_pass` (`user_pass`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE = MyISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;

@@ -9,6 +9,7 @@
     $req = $bdd->prepare($req_string);
     $req->execute(array($value, $userId));
   }
+  
   function updateSchema($bdd, $newKey) {
     if ($newKey === 0) {
       $req_string = 'INSERT INTO `application` (sql_schema) VALUES (?)';
@@ -52,5 +53,3 @@
   function passEqual($pass, $hash) {
     return password_verify($pass, $hash);
   }
-
-?>

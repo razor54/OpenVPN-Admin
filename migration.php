@@ -51,5 +51,3 @@
       echo "Moved to schema $migration_value\n";
     }
   }
-
-?>

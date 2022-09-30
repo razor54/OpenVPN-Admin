@@ -1,6 +1,6 @@
 #!/bin/bash
 
-print_help () {
+print_help() {
   echo -e "./install.sh www_basedir user group"
   echo -e "\tbase_dir: The place where the web application will be put in"
   echo -e "\tuser:     User of the web application"
@@ -21,7 +21,7 @@ fi
 
 # Ensure there are the prerequisites
 for i in openvpn mysql php bower node unzip wget sed; do
-  which $i > /dev/null
+  which $i >/dev/null
   if [ "$?" -ne 0 ]; then
     echo "Miss $i"
     exit
@@ -35,13 +35,12 @@ group=$3
 openvpn_admin="$www/openvpn-admin"
 
 # Check the validity of the arguments
-if [ ! -d "$www" ] ||  ! grep -q "$user" "/etc/passwd" || ! grep -q "$group" "/etc/group" ; then
+if [ ! -d "$www" ] || ! grep -q "$user" "/etc/passwd" || ! grep -q "$group" "/etc/group"; then
   print_help
   exit
 fi
 
-base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
+base_path=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 printf "\n################## Server informations ##################\n"
 
@@ -64,8 +63,9 @@ mysql_root_pass=""
 status_code=1
 
 while [ $status_code -ne 0 ]; do
-  read -p "MySQL root password: " -s mysql_root_pass; echo
-  echo "SHOW DATABASES" | mysql -u root --password="$mysql_root_pass" &> /dev/null
+  read -p "MySQL root password: " -s mysql_root_pass
+  echo
+  echo "SHOW DATABASES" | mysql -u root --password="$mysql_root_pass" &>/dev/null
   status_code=$?
 done
 
@@ -76,20 +76,19 @@ if [ "$sql_result" != "" ]; then
   exit
 fi
 
-
 # Check if the user doesn't already exist
 read -p "MySQL user name for OpenVPN-Admin (will be created): " mysql_user
 
-echo "SHOW GRANTS FOR $mysql_user@localhost" | mysql -u root --password="$mysql_root_pass" &> /dev/null
+echo "SHOW GRANTS FOR $mysql_user@localhost" | mysql -u root --password="$mysql_root_pass" &>/dev/null
 if [ $? -eq 0 ]; then
   echo "The MySQL user already exists."
   exit
 fi
 
-read -p "MySQL user password for OpenVPN-Admin: " -s mysql_pass; echo
+read -p "MySQL user password for OpenVPN-Admin: " -s mysql_pass
+echo
 
 # TODO MySQL port & host ?
-
 
 printf "\n################## Certificates informations ##################\n"
 
@@ -112,7 +111,6 @@ read -p "Organizational Unit Name (eg, section) [My Organizational Unit]: " cert
 read -p "Email Address [me@example.net]: " cert_email
 
 read -p "Common Name (eg, your name or your server's hostname) [ChangeMe]: " key_cn
-
 
 printf "\n################## Creating the certificates ##################\n"
 
@@ -166,7 +164,6 @@ fi
 # Generate shared-secret for TLS Authentication
 openvpn --genkey --secret pki/ta.key
 
-
 printf "\n################## Setup OpenVPN ##################\n"
 
 # Copy certificates and the server configuration in the openvpn directory
@@ -185,11 +182,11 @@ sed -i "s/group nogroup/group $nobody_group/" "/etc/openvpn/server.conf"
 printf "\n################## Setup firewall ##################\n"
 
 # Make ip forwading and make it persistent
-echo 1 > "/proc/sys/net/ipv4/ip_forward"
-echo "net.ipv4.ip_forward = 1" >> "/etc/sysctl.conf"
+echo 1 >"/proc/sys/net/ipv4/ip_forward"
+echo "net.ipv4.ip_forward = 1" >>"/etc/sysctl.conf"
 
 # Get primary NIC device name
-primary_nic=`route | grep '^default' | grep -o '[^ ]*$'`
+primary_nic=$(route | grep '^default' | grep -o '[^ ]*$')
 
 # Iptable rules
 iptables -I FORWARD -i tun0 -j ACCEPT
@@ -201,14 +198,12 @@ iptables -t nat -A POSTROUTING -o $primary_nic -j MASQUERADE
 iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o $primary_nic -j MASQUERADE
 iptables -t nat -A POSTROUTING -s 10.8.0.2/24 -o $primary_nic -j MASQUERADE
 
-
 printf "\n################## Setup MySQL database ##################\n"
 
 echo "CREATE DATABASE \`openvpn-admin\`" | mysql -u root --password="$mysql_root_pass"
 echo "CREATE USER $mysql_user@localhost IDENTIFIED BY '$mysql_pass'" | mysql -u root --password="$mysql_root_pass"
 echo "GRANT ALL PRIVILEGES ON \`openvpn-admin\`.*  TO $mysql_user@localhost" | mysql -u root --password="$mysql_root_pass"
 echo "FLUSH PRIVILEGES" | mysql -u root --password="$mysql_root_pass"
-
 
 printf "\n################## Setup web application ##################\n"
 
@@ -233,13 +228,13 @@ sed -i "s/\$pass = '';/\$pass = '$mysql_pass';/" "./include/config.php"
 
 # Replace in the client configurations with the ip of the server and openvpn protocol
 for file in $(find -name client.ovpn); do
-    sed -i "s/remote xxx\.xxx\.xxx\.xxx 443/remote $ip_server $server_port/" $file
-    echo "<ca>" >> $file
-    cat "/etc/openvpn/ca.crt" >> $file
-    echo "</ca>" >> $file
-    echo "<tls-auth>" >> $file
-    cat "/etc/openvpn/ta.key" >> $file
-    echo "</tls-auth>" >> $file
+  sed -i "s/remote xxx\.xxx\.xxx\.xxx 443/remote $ip_server $server_port/" $file
+  echo "<ca>" >>$file
+  cat "/etc/openvpn/ca.crt" >>$file
+  echo "</ca>" >>$file
+  echo "<tls-auth>" >>$file
+  cat "/etc/openvpn/ta.key" >>$file
+  echo "</tls-auth>" >>$file
 
   if [ $openvpn_proto = "udp" ]; then
     sed -i "s/proto tcp-client/proto udp/" $file

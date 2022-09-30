@@ -5,4 +5,3 @@
 	$user = '';
 	$pass = '';
 	$app_name = '';
-?>

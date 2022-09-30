@@ -1,6 +1,6 @@
 #!/bin/bash
 
-print_help () {
+print_help() {
   echo -e "./update.sh www_basedir"
   echo -e "\tbase_dir: The place where the web application is in"
 }
@@ -24,11 +24,10 @@ if [ ! -d "$www" ]; then
   exit
 fi
 
-base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+base_path=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 user=$(ls -l "$www/include/config.php" | awk '{ print $3 }')
 group=$(ls -l "$www/include/config.php" | awk '{ print $4 }')
-
 
 rm -rf "${www:?}/"{index.php,bower.json,.bowerrc,js,include/html,include/connect.php,include/functions.php,include/grids.php,css,vendor}
 

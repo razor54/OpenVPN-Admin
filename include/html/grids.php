@@ -1,9 +1,10 @@
 <?php
-function getHistory($cfg_file, $accordion_id, $open_first_history_tab = false) {
+function getHistory($cfg_file, $accordion_id, $open_first_history_tab = false)
+{
    ob_start(); ?>
    <h3>History</h3>
    <div class="panel-group" id="accordion<?= $accordion_id ?>">
-      <?php foreach (array_reverse(glob('client-conf/'.basename(pathinfo($cfg_file, PATHINFO_DIRNAME)).'/history/*')) as $i => $file): ?>
+      <?php foreach (array_reverse(glob('client-conf/' . basename(pathinfo($cfg_file, PATHINFO_DIRNAME)) . '/history/*')) as $i => $file) : ?>
          <div class="panel panel-default">
             <div class="panel-heading">
                <h4 class="panel-title">
@@ -16,17 +17,19 @@ function getHistory($cfg_file, $accordion_id, $open_first_history_tab = false) {
                   </a>
                </h4>
             </div>
-            <div id="collapse<?= $accordion_id ?>-<?= $i ?>" class="panel-collapse collapse <?= $i===0 && $open_first_history_tab?'in':'' ?>">
-               <div class="panel-body"><pre><?= file_get_contents($file) ?></pre></div>
+            <div id="collapse<?= $accordion_id ?>-<?= $i ?>" class="panel-collapse collapse <?= $i === 0 && $open_first_history_tab ? 'in' : '' ?>">
+               <div class="panel-body">
+                  <pre><?= file_get_contents($file) ?></pre>
+               </div>
             </div>
          </div>
       <?php endforeach; ?>
    </div><?php
-   $history = ob_get_contents();
-   ob_end_clean();
-   return $history;
-}
-?>
+         $history = ob_get_contents();
+         ob_end_clean();
+         return $history;
+      }
+         ?>
 <ul class="nav nav-tabs">
    <li class="active"><a data-toggle="tab" href="#menu0"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> OpenVPN Users</a></li>
    <li><a data-toggle="tab" href="#menu1"><span class="glyphicon glyphicon-book" aria-hidden="true"></span> OpenVPN logs</a></li>
@@ -53,7 +56,7 @@ function getHistory($cfg_file, $accordion_id, $open_first_history_tab = false) {
                   <div class="modal-body">
                      <div class="form-group">
                         <label for="modal-user-add-username">Username</label>
-                        <input type="text" name="username" id="modal-user-add-username" class="form-control" autofocus/>
+                        <input type="text" name="username" id="modal-user-add-username" class="form-control" autofocus />
                      </div>
                      <div class="form-group">
                         <label for="modal-user-add-password">Password</label>
@@ -98,7 +101,7 @@ function getHistory($cfg_file, $accordion_id, $open_first_history_tab = false) {
                   <div class="modal-body">
                      <div class="form-group">
                         <label for="modal-admin-add-username">Username</label>
-                        <input type="text" name="username" id="modal-admin-add-username" class="form-control" autofocus/>
+                        <input type="text" name="username" id="modal-admin-add-username" class="form-control" autofocus />
                      </div>
                      <div class="form-group">
                         <label for="modal-admin-add-password">Password</label>
@@ -128,19 +131,19 @@ function getHistory($cfg_file, $accordion_id, $open_first_history_tab = false) {
          <div class="tab-content">
             <div id="menu-1-0" class="tab-pane fade in active">
 
-               <textarea class="form-control" data-config-file="<?= $cfg_file='client-conf/gnu-linux/client.conf' ?>" name="" id="" cols="30" rows="20"><?= file_get_contents($cfg_file) ?></textarea>
+               <textarea class="form-control" data-config-file="<?= $cfg_file = 'client-conf/gnu-linux/client.ovpn' ?>" name="" id="" cols="30" rows="20"><?= file_get_contents($cfg_file) ?></textarea>
                <?= getHistory($cfg_file, @++$accId) ?>
 
             </div>
             <div id="menu-1-1" class="tab-pane fade">
 
-               <textarea class="form-control" data-config-file="<?= $cfg_file='client-conf/windows/client.ovpn' ?>" name="" id="" cols="30" rows="20"><?= file_get_contents($cfg_file) ?></textarea>
+               <textarea class="form-control" data-config-file="<?= $cfg_file = 'client-conf/windows/client.ovpn' ?>" name="" id="" cols="30" rows="20"><?= file_get_contents($cfg_file) ?></textarea>
                <?= getHistory($cfg_file, ++$accId) ?>
 
             </div>
             <div id="menu-1-2" class="tab-pane fade">
 
-               <textarea class="form-control" data-config-file="<?= $cfg_file='client-conf/osx-viscosity/client.conf' ?>" name="" id="" cols="30" rows="20"><?= file_get_contents($cfg_file) ?></textarea>
+               <textarea class="form-control" data-config-file="<?= $cfg_file = 'client-conf/osx-viscosity/client.ovpn' ?>" name="" id="" cols="30" rows="20"><?= file_get_contents($cfg_file) ?></textarea>
                <?= getHistory($cfg_file, ++$accId) ?>
 
             </div>
@@ -165,19 +168,19 @@ function getHistory($cfg_file, $accordion_id, $open_first_history_tab = false) {
 <script src="js/grids.js"></script>
 
 <script>
-$(document).ready(function(){
-   /*
-   https://stackoverflow.com/a/19015027/3214501
-   -> keep the currently active tab beyond page reloading
-   */
-   $('.nav.nav-tabs a').click(function(e) {
-     e.preventDefault();
-     $(this).tab('show');
+   $(document).ready(function() {
+      /*
+      https://stackoverflow.com/a/19015027/3214501
+      -> keep the currently active tab beyond page reloading
+      */
+      $('.nav.nav-tabs a').click(function(e) {
+         e.preventDefault();
+         $(this).tab('show');
+      });
+      $("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
+         var id = $(e.target).attr("href").substr(1);
+         window.location.hash = id;
+      });
+      $('.nav.nav-tabs a[href="' + window.location.hash + '"]').tab('show');
    });
-   $("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
-     var id = $(e.target).attr("href").substr(1);
-     window.location.hash = id;
-   });
-   $('.nav.nav-tabs a[href="' + window.location.hash + '"]').tab('show');
-});
 </script>

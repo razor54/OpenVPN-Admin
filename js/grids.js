@@ -2,15 +2,15 @@ $(function () {
   "use strict";
 
   // ------------------------- GENERIC STUFF ------------------------------
-  window.printStatus = function(msg, alert_type='warning', bootstrap_icon='') {
-     $('#message-stage').empty()
-         .append(
-            $(document.createElement('div'))
-            .addClass('alert alert-'+alert_type)
-            .html(bootstrap_icon?'<i class="stauts-icon glyphicon glyphicon-'+bootstrap_icon+'"></i>':'')
-            .append(msg)
-            .hide().fadeIn().delay(2000).fadeOut()
-         );
+  window.printStatus = function (msg, alert_type = 'warning', bootstrap_icon = '') {
+    $('#message-stage').empty()
+      .append(
+        $(document.createElement('div'))
+          .addClass('alert alert-' + alert_type)
+          .html(bootstrap_icon ? '<i class="stauts-icon glyphicon glyphicon-' + bootstrap_icon + '"></i>' : '')
+          .append(msg)
+          .hide().fadeIn().delay(2000).fadeOut()
+      );
   }
 
   // ------------------------- GLOBAL definitions -------------------------
@@ -20,20 +20,20 @@ $(function () {
     return "<span class='glyphicon glyphicon-remove action'></span";
   }
 
- function secretCodeFormatter(value, row) {
-     if (value) {
-        return '*********';
-      }
-      else {
-        return "NOT SET";
-      }
-   }
+  function secretCodeFormatter(value, row) {
+    if (value) {
+      return '*********';
+    }
+    else {
+      return "NOT SET";
+    }
+  }
 
   function refreshTable($table) {
     $table.bootstrapTable('refresh');
   }
 
-  function onAjaxError (xhr, textStatus, error) {
+  function onAjaxError(xhr, textStatus, error) {
     console.error(error);
     alert('Error: ' + textStatus);
   }
@@ -41,13 +41,13 @@ $(function () {
 
 
 
-   function checkFormatter(value, row, index) {
-      return '<input type="checkbox" '+(parseInt(value)===1?'checked':'')+' />';
-   }
+  function checkFormatter(value, row, index) {
+    return '<input type="checkbox" ' + (parseInt(value) === 1 ? 'checked' : '') + ' />';
+  }
 
-   function LEDIndicatorFormatter(value, row, index) {
-      return '<div class="'+(parseInt(value)===1?'mini-led-green':'mini-led-red')+'"></div>';
-   }
+  function LEDIndicatorFormatter(value, row, index) {
+    return '<div class="' + (parseInt(value) === 1 ? 'mini-led-green' : 'mini-led-red') + '"></div>';
+  }
 
   // ------------------------- USERS definitions -------------------------
   var $userTable = $('#table-users');
@@ -63,7 +63,7 @@ $(function () {
         user_id: username,
         user_pass: password
       },
-      success: function() {
+      success: function () {
         refreshTable($userTable);
       },
       error: onAjaxError
@@ -78,7 +78,7 @@ $(function () {
         del_user_id: user_id
       },
       method: 'POST',
-      success: function() {
+      success: function () {
         refreshTable($userTable);
       },
       error: onAjaxError
@@ -92,10 +92,10 @@ $(function () {
         set_user: true,
         name: field,
         value: new_value,
-        pk : pk
+        pk: pk
       },
       method: 'POST',
-      success: function() {
+      success: function () {
         refreshTable($userTable);
       },
       error: onAjaxError
@@ -118,18 +118,18 @@ $(function () {
     $.ajax({
       url: gridsUrl,
       data: {
-        update_config : true,
+        update_config: true,
         config_file: config_file,
         config_content: config_content
       },
-      success : function(res){
-         printStatus(
-            res.config_success?'Config Successfully updated!':'An error occured while trying to save the updated config.',
-            res.config_success?'success':'danger',
-            res.config_success?'ok':'warning-sign'
-         );
+      success: function (res) {
+        printStatus(
+          res.config_success ? 'Config Successfully updated!' : 'An error occured while trying to save the updated config.',
+          res.config_success ? 'success' : 'danger',
+          res.config_success ? 'ok' : 'warning-sign'
+        );
       },
-      dataType : 'json',
+      dataType: 'json',
       method: 'POST',
       error: onAjaxError
     });
@@ -157,7 +157,7 @@ $(function () {
         admin_id: username,
         admin_pass: password
       },
-      success: function() {
+      success: function () {
         refreshTable($adminTable);
       },
       error: onAjaxError
@@ -172,7 +172,7 @@ $(function () {
         del_admin_id: admin_id
       },
       method: 'POST',
-      success: function() {
+      success: function () {
         refreshTable($adminTable);
       },
       error: onAjaxError
@@ -214,39 +214,39 @@ $(function () {
       { title: "Mail", field: "user_mail", editable: userEditable },
       { title: "Phone", field: "user_phone", editable: userEditable },
       {
-         title: "Online",
-         field: "user_online",
-         formatter : LEDIndicatorFormatter
+        title: "Online",
+        field: "user_online",
+        formatter: LEDIndicatorFormatter
       },
       {
-         title: "Enabled",
-         field: "user_enable",
-         formatter : checkFormatter,
-         events: {
-            'click input': function (e, value, row) {
-              genericSetField('user_enable', value === '1' ? '0': '1', row.user_id);
-            }
-         }
+        title: "Enabled",
+        field: "user_enable",
+        formatter: checkFormatter,
+        events: {
+          'click input': function (e, value, row) {
+            genericSetField('user_enable', value === '1' ? '0' : '1', row.user_id);
+          }
+        }
       },
       {
-         title: "2 Factor Auth",
-         field: "user_2factor",
-         formatter : checkFormatter,
-         events: {
-            'click input': function (e, value, row) {
-              genericSetField('user_2factor', value === '1' ? '0': '1', row.user_id);
-            }
-         }
+        title: "2 Factor Auth",
+        field: "user_2factor",
+        formatter: checkFormatter,
+        events: {
+          'click input': function (e, value, row) {
+            genericSetField('user_2factor', value === '1' ? '0' : '1', row.user_id);
+          }
+        }
       },
       {
-         title: "2 Factor Auth - Paired",
-         field: "user_2factor_paired",
-         formatter : checkFormatter,
-         events: {
-            'click input': function (e, value, row) {
-              genericSetField('user_2factor_paired', value === '1' ? '0': '1', row.user_id);
-            }
-         }
+        title: "2 Factor Auth - Paired",
+        field: "user_2factor_paired",
+        formatter: checkFormatter,
+        events: {
+          'click input': function (e, value, row) {
+            genericSetField('user_2factor_paired', value === '1' ? '0' : '1', row.user_id);
+          }
+        }
       },
       { title: "2 Factor Auth - Secret Code", field: "user_2factor_scode", editable: userEditable, formatter: secretCodeFormatter },
       { title: "Start Date", field: "user_start_date", editable: userDateEditable },
@@ -327,11 +327,11 @@ $(function () {
     },
     columns: [
       { title: "Log ID", field: "log_id" },
-      { title: "User ID", field: "user_id", filterControl : 'select' },
-      { title: "Trusted IP", field: "log_trusted_ip", filterControl : 'select' },
-      { title: "Trusted Port", field: "log_trusted_port", filterControl : 'select' },
-      { title: "Remote IP", field: "log_remote_ip", filterControl : 'select' },
-      { title: "Remote Port", field: "log_remote_port", filterControl : 'select' },
+      { title: "User ID", field: "user_id", filterControl: 'select' },
+      { title: "Trusted IP", field: "log_trusted_ip", filterControl: 'select' },
+      { title: "Trusted Port", field: "log_trusted_port", filterControl: 'select' },
+      { title: "Remote IP", field: "log_remote_ip", filterControl: 'select' },
+      { title: "Remote Port", field: "log_remote_port", filterControl: 'select' },
       { title: "Start Time", field: "log_start_time" },
       { title: "End Time", field: "log_end_time" },
       { title: "Receveid", field: "log_received" },
@@ -340,11 +340,11 @@ $(function () {
   });
 
   // watch the config textareas for changes an persist them if a change was made
-  $('textarea').keyup(function(){
-     $('#save-config-btn').removeClass('saved-success hidden').addClass('get-attention');
-  }).change(function(){
-      updateConfig($(this).data('config-file'), $(this).val());
-      $('#save-config-btn').removeClass('get-attention').addClass('saved-success');
+  $('textarea').keyup(function () {
+    $('#save-config-btn').removeClass('saved-success hidden').addClass('get-attention');
+  }).change(function () {
+    updateConfig($(this).data('config-file'), $(this).val());
+    $('#save-config-btn').removeClass('get-attention').addClass('saved-success');
   });
 
 }); // doc ready end
@@ -354,6 +354,6 @@ $(function () {
 // Autofocus for bootstrap modals
 // Thx http://stackoverflow.com/questions/14940423/autofocus-input-in-twitter-bootstrap-modal/33323836#33323836
 
-$(document).on('shown.bs.modal', '.modal', function() {
+$(document).on('shown.bs.modal', '.modal', function () {
   $(this).find('[autofocus]').focus();
 });
